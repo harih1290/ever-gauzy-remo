@@ -22,6 +22,7 @@ import { HeaderTitleModule } from '../../../@shared/components/header-title/head
 import { FiltersModule } from '../../../@shared/timesheet/filters/filters.module';
 import { DateRangeTitleModule } from '../../../@shared/components/date-range-title/date-range-title.module';
 import { CounterPointModule } from '../../../@shared/counter-point/counter-point.module';
+import { SwiperModule } from 'swiper/angular';
 
 @NgModule({
 	imports: [
@@ -44,7 +45,8 @@ import { CounterPointModule } from '../../../@shared/counter-point/counter-point
 		HeaderTitleModule,
 		DateRangeTitleModule,
 		FiltersModule,
-    	CounterPointModule
+    	CounterPointModule,
+		SwiperModule
 	],
 	declarations: [TimeTrackingComponent],
 	exports: [TimeTrackingComponent],
