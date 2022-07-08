@@ -42,7 +42,7 @@
 		"@nebular/eva-icons": "^9.0.3",
 		"@nebular/security": "^9.0.3",
 		"@nebular/theme": "^9.0.3",
-		"@nestjs/typeorm": "^8.0.3",
+		"@nestjs/typeorm": "^8.1.4",
 		"@ng-select/ng-select": "^8.1.1",
 		"@sentry/types": "^6.19.7",
 		"@sentry/electron": "^3.0.7",
@@ -64,7 +64,7 @@
 		"pg-query-stream": "^4.2.3",
 		"squirrelly": "^8.0.8",
 		"twing": "^5.0.2",
-		"typeorm": "^0.2.45",
+		"typeorm": "^0.3.7",
 		"typeorm-aurora-data-api-driver": "^2.3.3",
 		"typeorm-express-query-builder": "https://github.com/ever-co/typeorm-express-query-builder.git"
 	}

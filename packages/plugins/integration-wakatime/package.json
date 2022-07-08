@@ -30,8 +30,8 @@
 	"dependencies": {
 		"@gauzy/contracts": "^0.1.0",
 		"@nestjs/common": "^8.4.4",
-		"@nestjs/typeorm": "^8.0.3",
-		"typeorm": "^0.2.45"
+		"@nestjs/typeorm": "^8.1.4",
+		"typeorm": "^0.3.7"
 	},
 	"devDependencies": {
 		"@types/node": "^17.0.33",
