@@ -24,7 +24,7 @@ import {
 import { CommandBus } from '@nestjs/cqrs';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { I18nLang } from 'nestjs-i18n';
-import { FindManyOptions } from 'typeorm';
+import { FindManyOptions, FindOptionsWhere } from 'typeorm';
 import { Request } from 'express';
 import {
 	EmployeeCreateCommand,
@@ -57,9 +57,9 @@ export class EmployeeController extends CrudController<Employee> {
 
 	/**
 	 * GET all working employees
-	 * 
-	 * @param data 
-	 * @returns 
+	 *
+	 * @param data
+	 * @returns
 	 */
 	@ApiOperation({ summary: 'Find all working employees.' })
 	@ApiResponse({
@@ -84,9 +84,9 @@ export class EmployeeController extends CrudController<Employee> {
 
 	/**
 	 * GET all working employees count
-	 * 
-	 * @param data 
-	 * @returns 
+	 *
+	 * @param data
+	 * @returns
 	 */
 	@ApiOperation({ summary: 'Find all working employees count.' })
 	@ApiResponse({
@@ -114,9 +114,9 @@ export class EmployeeController extends CrudController<Employee> {
 
 	/**
 	 * GET employee jobs statistics
-	 * 
-	 * @param request 
-	 * @returns 
+	 *
+	 * @param request
+	 * @returns
 	 */
 	@ApiOperation({ summary: 'Get Employee Jobs Statistics' })
 	@ApiResponse({
@@ -139,9 +139,9 @@ export class EmployeeController extends CrudController<Employee> {
 
 	/**
 	 * GET all public information employees in the same tenant.
-	 * 
-	 * @param data 
-	 * @returns 
+	 *
+	 * @param data
+	 * @returns
 	 */
 	@ApiOperation({
 		summary: 'Find all public information employees in the same tenant.'
@@ -165,18 +165,18 @@ export class EmployeeController extends CrudController<Employee> {
 		@Query('data', ParseJsonPipe) data: any
 	): Promise<IPagination<IEmployee>> {
 		const { relations = [], findInput = null } = data;
-		return this.employeeService.findAll({ 
-			where: findInput, 
-			relations 
+		return this.employeeService.findAll({
+			where: findInput,
+			relations
 		});
 	}
 
 	/**
 	 * GET all public information employee in the same tenant.
-	 * 
-	 * @param id 
-	 * @param data 
-	 * @returns 
+	 *
+	 * @param id
+	 * @param data
+	 * @returns
 	 */
 	@ApiOperation({
 		summary: 'Find all public information employee in the same tenant.'
@@ -204,10 +204,10 @@ export class EmployeeController extends CrudController<Employee> {
 
 	/**
 	 * GET employee by user id in the same tenant
-	 * 
-	 * @param userId 
-	 * @param data 
-	 * @returns 
+	 *
+	 * @param userId
+	 * @param data
+	 * @returns
 	 */
 	@ApiOperation({ summary: 'Find employee by user id in the same tenant.' })
 	@ApiResponse({
@@ -224,7 +224,7 @@ export class EmployeeController extends CrudController<Employee> {
 	async findByUserId(
 		@Param('userId', UUIDValidationPipe) userId: string,
 		@Query('data', ParseJsonPipe) data?: any
-	): Promise<ITryRequest> {
+	): Promise<ITryRequest<Employee>> {
 		const { relations = [] } = data;
 		return this.employeeService.findOneOrFailByOptions({
 			where: {
@@ -236,10 +236,10 @@ export class EmployeeController extends CrudController<Employee> {
 
 	/**
 	 * CREATE bulk employees in the same tenant.
-	 * 
-	 * @param entity 
-	 * @param languageCode 
-	 * @returns 
+	 *
+	 * @param entity
+	 * @param languageCode
+	 * @returns
 	 */
 	@ApiOperation({ summary: 'Create records in Bulk' })
 	@ApiResponse({
@@ -263,31 +263,26 @@ export class EmployeeController extends CrudController<Employee> {
 		);
 	}
 
-	
+
 	/**
 	 * GET employee count in the same tenant.
-	 * 
-	 * @param filter 
-	 * @returns 
+	 *
+	 * @param filter
+	 * @returns
 	 */
 	@Get('count')
 	@UsePipes(new ValidationPipe({ transform: true }))
 	async getCount(
-		@Query() filter: PaginationParams<IEmployee>
+		@Query() options: FindOptionsWhere<Employee>
 	): Promise<number> {
-		return this.employeeService.count({
-			where: {
-				tenantId: RequestContext.currentTenantId()
-			},
-			...filter
-		});
+		return this.employeeService.countBy(options);
 	}
 
 	/**
 	 * GET employees by pagination in the same tenant.
-	 * 
-	 * @param filter 
-	 * @returns 
+	 *
+	 * @param filter
+	 * @returns
 	 */
 	@UseGuards(TenantPermissionGuard, PermissionGuard)
 	@Permissions(PermissionsEnum.ORG_EMPLOYEES_VIEW)
@@ -301,9 +296,9 @@ export class EmployeeController extends CrudController<Employee> {
 
 	/**
 	 * GET all employees in the same tenant.
-	 * 
-	 * @param data 
-	 * @returns 
+	 *
+	 * @param data
+	 * @returns
 	 */
 	@ApiOperation({ summary: 'Find all employees in the same tenant.' })
 	@ApiResponse({
@@ -329,10 +324,10 @@ export class EmployeeController extends CrudController<Employee> {
 
 	/**
 	 * GET employee by id in the same tenant.
-	 * 
-	 * @param id 
-	 * @param data 
-	 * @returns 
+	 *
+	 * @param id
+	 * @param data
+	 * @returns
 	 */
 	@ApiOperation({ summary: 'Find employee by id in the same tenant.' })
 	@ApiResponse({
@@ -361,14 +356,14 @@ export class EmployeeController extends CrudController<Employee> {
 			});
 		}
 	}
-	
+
 	/**
 	 * CREATE employee in the same tenant
-	 * 
-	 * @param entity 
-	 * @param request 
-	 * @param languageCode 
-	 * @returns 
+	 *
+	 * @param entity
+	 * @param request
+	 * @param languageCode
+	 * @returns
 	 */
 	@ApiOperation({ summary: 'Create new record' })
 	@ApiResponse({
@@ -395,11 +390,11 @@ export class EmployeeController extends CrudController<Employee> {
 	}
 
 	/**
-	 * UPDATE employee by id in the same tenant 
-	 * 
-	 * @param id 
-	 * @param entity 
-	 * @returns 
+	 * UPDATE employee by id in the same tenant
+	 *
+	 * @param id
+	 * @param entity
+	 * @returns
 	 */
 	@ApiOperation({ summary: 'Update an existing record' })
 	@ApiResponse({
@@ -434,10 +429,10 @@ export class EmployeeController extends CrudController<Employee> {
 
 	/**
 	 * Update employee own profile by themselves
-	 * 
-	 * @param id 
-	 * @param entity 
-	 * @returns 
+	 *
+	 * @param id
+	 * @param entity
+	 * @returns
 	 */
 	@ApiOperation({ summary: 'Update Employee Own Profile' })
 	@ApiResponse({
@@ -466,10 +461,10 @@ export class EmployeeController extends CrudController<Employee> {
 
 	/**
 	 * UPDATE employee job search status by employee id
-	 * 
-	 * @param employeeId 
-	 * @param entity 
-	 * @returns 
+	 *
+	 * @param employeeId
+	 * @param entity
+	 * @returns
 	 */
 	@ApiOperation({ summary: 'Update Job Search Status' })
 	@ApiResponse({
