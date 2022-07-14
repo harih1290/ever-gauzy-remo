@@ -21,16 +21,16 @@ export class OrganizationService extends TenantAwareCrudService<Organization> {
 		select?: string,
 		relation?: string
 	): Promise<Organization> {
-		const findObj: FindOneOptions<Organization> = {};
-
+		const options: FindOneOptions<Organization> = {};
 		if (select) {
-			findObj['select'] = JSON.parse(select);
-			findObj['relations'] = JSON.parse(relation);
+			options['select'] = JSON.parse(select);
+			options['relations'] = JSON.parse(relation);
 		}
-
-		return await this.organizationRepository.findOne(
-			{ profile_link },
-			findObj
-		);
+		return await this.organizationRepository.findOne({
+			where: {
+				profile_link
+			},
+			...options
+		});
 	}
 }
