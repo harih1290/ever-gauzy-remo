@@ -37,12 +37,17 @@ import {
 import { CrudController, ITryRequest, PaginationParams } from './../core/crud';
 import { RequestContext } from '../core/context';
 import { TransformInterceptor } from './../core/interceptors';
-import { Permissions, Public } from './../shared/decorators';
+import { Permissions } from './../shared/decorators';
 import { BulkBodyLoadTransformPipe, ParseJsonPipe, UUIDValidationPipe } from './../shared/pipes';
 import { PermissionGuard, TenantPermissionGuard } from './../shared/guards';
 import { Employee } from './employee.entity';
 import { EmployeeService } from './employee.service';
-import { EmployeeBulkInputDTO, CreateEmployeeDTO, UpdateEmployeeDTO, UpdateProfileDTO } from './dto';
+import {
+	EmployeeBulkInputDTO,
+	CreateEmployeeDTO,
+	UpdateEmployeeDTO,
+	UpdateProfileDTO
+} from './dto';
 
 @ApiTags('Employee')
 @UseInterceptors(TransformInterceptor)
@@ -135,71 +140,6 @@ export class EmployeeController extends CrudController<Employee> {
 		return this.commandBus.execute(
 			new GetEmployeeJobStatisticsCommand(request)
 		);
-	}
-
-	/**
-	 * GET all public information employees in the same tenant.
-	 *
-	 * @param data
-	 * @returns
-	 */
-	@ApiOperation({
-		summary: 'Find all public information employees in the same tenant.'
-	})
-	@ApiResponse({
-		status: HttpStatus.OK,
-		description: 'Found employees in the tenant',
-		type: Employee
-	})
-	@ApiResponse({
-		status: HttpStatus.NOT_FOUND,
-		description: 'Record not found'
-	})
-	@Get('/public')
-	@Public()
-	/**
-	 * TODO: This is a public service, the response should only contain
-	 * those fields (columns) of an employee that can be shown to the public
-	 */
-	async findAllEmployeesPublic(
-		@Query('data', ParseJsonPipe) data: any
-	): Promise<IPagination<IEmployee>> {
-		const { relations = [], findInput = null } = data;
-		return this.employeeService.findAll({
-			where: findInput,
-			relations
-		});
-	}
-
-	/**
-	 * GET all public information employee in the same tenant.
-	 *
-	 * @param id
-	 * @param data
-	 * @returns
-	 */
-	@ApiOperation({
-		summary: 'Find all public information employee in the same tenant.'
-	})
-	@ApiResponse({
-		status: HttpStatus.OK,
-		description: 'Found employee in the tenant',
-		type: Employee
-	})
-	@ApiResponse({
-		status: HttpStatus.NOT_FOUND,
-		description: 'Record not found'
-	})
-	@Get('/public/:id')
-	@Public()
-	async findEmployeePublic(
-		@Param('id', UUIDValidationPipe) id: string,
-		@Query('data', ParseJsonPipe) data: any
-	): Promise<IEmployee> {
-		const { relations = [] } = data;
-		return this.employeeService.findOneByIdString(id, {
-			relations
-		});
 	}
 
 	/**
@@ -379,7 +319,9 @@ export class EmployeeController extends CrudController<Employee> {
 	@Permissions(PermissionsEnum.ORG_EMPLOYEES_EDIT)
 	@Post()
 	async create(
-		@Body(new ValidationPipe({ transform:true })) entity: CreateEmployeeDTO,
+		@Body(new ValidationPipe({
+			transform:true
+		})) entity: CreateEmployeeDTO,
 		@Req() request: Request,
 		@I18nLang() languageCode: LanguagesEnum
 	): Promise<IEmployee> {
@@ -414,10 +356,12 @@ export class EmployeeController extends CrudController<Employee> {
 	@Put(':id')
 	@UseGuards(TenantPermissionGuard, PermissionGuard)
 	@Permissions(PermissionsEnum.ORG_EMPLOYEES_EDIT)
-	@UsePipes(new ValidationPipe({ transform : true, whitelist: true }))
 	async update(
 		@Param('id', UUIDValidationPipe) id: string,
-		@Body() entity: UpdateEmployeeDTO
+		@Body(new ValidationPipe({
+			transform : true,
+			whitelist: true
+		})) entity: UpdateEmployeeDTO
 	): Promise<IEmployee> {
 		return await this.commandBus.execute(
 			new EmployeeUpdateCommand({

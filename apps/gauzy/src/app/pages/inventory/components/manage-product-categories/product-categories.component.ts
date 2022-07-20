@@ -138,6 +138,7 @@ export class ProductCategoriesComponent
 				display: false,
 				perPage: pagination ? pagination.itemsPerPage : 10
 			},
+			noDataMessage: this.getTranslation('SM_TABLE.NO_DATA.PRODUCT_CATEGORY'),
 			columns: {
 				imageUrl: {
 					title: this.getTranslation('INVENTORY_PAGE.IMAGE'),

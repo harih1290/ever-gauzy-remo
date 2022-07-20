@@ -196,6 +196,7 @@ export class ApprovalPolicyComponent
 				display: false,
 				perPage: pagination ? pagination : 10
 			},
+			noDataMessage: this.getTranslation('SM_TABLE.NO_DATA.APPROVAL_POLICY'),
 			columns: {
 				name: {
 					title: this.getTranslation(

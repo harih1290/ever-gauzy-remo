@@ -138,6 +138,7 @@ export class WarehousesTableComponent
 				display: false,
 				perPage: pagination ? pagination.itemsPerPage : 10
 			},
+			noDataMessage: this.getTranslation('SM_TABLE.NO_DATA.WAREHOUSE'),
 			columns: {
 				name: {
 					title: this.getTranslation('INVENTORY_PAGE.LOGO'),
